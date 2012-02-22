@@ -43,31 +43,32 @@ removeAsync = exports.removeAsync = (paths, options, cb) ->
     options = {verbose, ignoreErrors, ignoreMissing} = 
         ({-verbose, -ignoreErrors, -ignoreMissing} import options)
     
-    Seq(paths)
-        .parEach_ (p, next_path) ->
-            console.log "rm -rv #p" if verbose
-            Seq()
-            .seq fs.stat, p, Seq
-            .seq (stats) ->
-                # Files can be removed right away, and then move on to the next path
-                unless stats.isDirectory()
-                    fs.unlink p, next_path
-                else
-                    # ...But directories need to be empty
-                    fs.readdir p, this
-            # Remove children with the same options
-            .seq (contents) -> removeAsync contents, options, this
-            # Finally, kill it
-            .seq fs.rmdir, p, Seq
-            # And terminate the async chain
-            .seq next_path.ok
-            # Propagate errors
-            .catch (err) -> next_path err
-        
-        # Notify callback!
-        .seq -> cb null
-        .catch (err) ->
-            console.error err if verbose
-            return @ok() if ignoreErrors or (ignoreMissing and err.code is 'ENOENT')
-            cb err
+    Seq paths
+    .parEach_ (p, next_path) ->
+        console.log "rm -rv #p" if verbose
+        Seq()
+        .seq fs.stat, p, Seq
+        .seq (stats) ->
+            # Files can be removed right away, and then move on to the next path
+            unless stats.isDirectory()
+                fs.unlink p, next_path
+            else
+                # ...But directories need to be empty
+                fs.readdir p, this
+        # Remove children with the same options
+        .seq (contents) -> removeAsync contents, options, this
+        # Finally, kill it
+        .seq fs.rmdir, p, Seq
+        # And terminate the async chain
+        .seq next_path.ok
+        # Propagate errors
+        .catch (err) -> next_path err
+    
+    # Notify callback!
+    .seq -> cb null
+    .catch (err) ->
+        console.error err if verbose
+        return @ok() if ignoreErrors or (ignoreMissing and err.code is 'ENOENT')
+        cb err
+    
     void

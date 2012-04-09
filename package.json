@@ -1,14 +1,17 @@
 {
   "name": "remove",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sync and async rm -r.",
-  "homepage": "http://dsc.github.com/node-remove/",
+  "homepage": "http://github.com/dsc/node-remove",
   "keywords": [
     "util",
     "server",
     "files",
     "fs",
-    "rm"
+    "rm",
+    "remove",
+    "delete",
+    "recursive"
   ],
   "author": "David Schoonover <dsc@less.ly> (http://less.ly)",
   "dependencies": {

@@ -1,5 +1,5 @@
 name                            : 'remove'
-version                         : '0.1.1'
+version                         : '0.1.2'
 description                     : 'Sync and async rm -r.'
 homepage                        : 'http://github.com/dsc/node-remove'
 keywords                        : <[ util server files fs rm remove delete recursive ]>
@@ -18,5 +18,5 @@ scripts                         : test:'expresso'
 repository                      : type:'git', url:'git://github.com/dsc/node-remove.git'
 bugs                            : url:'http://github.com/dsc/node-remove/issues'
 
-engine                          : node:'>=0.6.2'
+engine                          : node:'>=0.6.x'
 license                         : 'MIT'

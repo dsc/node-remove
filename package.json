@@ -1,6 +1,6 @@
 {
   "name": "remove",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Sync and async rm -r.",
   "homepage": "http://github.com/dsc/node-remove",
   "keywords": [
@@ -32,7 +32,7 @@
     "url": "http://github.com/dsc/node-remove/issues"
   },
   "engine": {
-    "node": ">=0.6.2"
+    "node": ">=0.6.x"
   },
   "license": "MIT"
 }

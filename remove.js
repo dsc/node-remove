@@ -26,30 +26,30 @@ Seq = require('seq');
  */
 removeAsync = module.exports = exports = (function(){
   function removeAsync(paths, options, cb){
-    var verbose, ignoreErrors, ignoreMissing, stepMethod, _ref;
+    var verbose, ignoreErrors, ignoreMissing, stepMethod, __ref;
     paths == null && (paths = []);
     if (typeof paths === 'string') {
       paths = [paths];
     }
     if (typeof options === 'function') {
-      _ref = [options, {}], cb = _ref[0], options = _ref[1];
+      __ref = [options, {}], cb = __ref[0], options = __ref[1];
     }
     if (typeof cb !== 'function') {
       throw new Error('Callback must be a function!');
     }
-    options = (_ref = __import({
+    options = (__ref = __import({
       verbose: false,
       sequential: false,
       ignoreErrors: false,
       ignoreMissing: false
-    }, options), verbose = _ref.verbose, ignoreErrors = _ref.ignoreErrors, ignoreMissing = _ref.ignoreMissing, _ref);
+    }, options), verbose = __ref.verbose, ignoreErrors = __ref.ignoreErrors, ignoreMissing = __ref.ignoreMissing, __ref);
     stepMethod = options.sequential ? 'seqEach_' : 'parEach_';
     Seq(paths)[stepMethod](function(next_path, p){
       if (verbose) {
         console.log("rm -rv " + p);
       }
-      return Seq().seq(fs.stat, p, Seq).seq(function(stats){
-        if (!stats.isDirectory()) {
+      return Seq().seq(fs.lstat, p, Seq).seq(function(stats){
+        if (stats.isSymbolicLink() || !stats.isDirectory()) {
           return fs.unlink(p, next_path);
         } else {
           return fs.readdir(p, this);
@@ -93,28 +93,28 @@ exports.removeAsync = removeAsync;
  */
 removeSync = exports.removeSync = (function(){
   function removeSync(paths, options){
-    var verbose, ignoreErrors, ignoreMissing, p, stats, _ref, _i, _len;
+    var verbose, ignoreErrors, ignoreMissing, p, stats, __ref, __i, __len;
     paths == null && (paths = []);
     options == null && (options = {});
     if (typeof paths === 'string') {
       paths = [paths];
     }
-    options = (_ref = __import({
+    options = (__ref = __import({
       verbose: false,
       ignoreErrors: false,
       ignoreMissing: false
-    }, options), verbose = _ref.verbose, ignoreErrors = _ref.ignoreErrors, ignoreMissing = _ref.ignoreMissing, _ref);
-    for (_i = 0, _len = paths.length; _i < _len; ++_i) {
-      p = paths[_i];
+    }, options), verbose = __ref.verbose, ignoreErrors = __ref.ignoreErrors, ignoreMissing = __ref.ignoreMissing, __ref);
+    for (__i = 0, __len = paths.length; __i < __len; ++__i) {
+      p = paths[__i];
       if (verbose) {
         console.log("rm -rv " + p);
       }
       try {
-        stats = fs.statSync(p);
-        if (!stats.isDirectory()) {
+        stats = fs.lstatSync(p);
+        if (stats.isSymbolicLink() || !stats.isDirectory()) {
           fs.unlinkSync(p);
         } else {
-          fs.readdirSync(p).forEach(_fn);
+          fs.readdirSync(p).forEach(__fn);
           fs.rmdirSync(p);
         }
       } catch (err) {
@@ -128,7 +128,7 @@ removeSync = exports.removeSync = (function(){
         }
       }
     }
-    function _fn(it){
+    function __fn(it){
       return removeSync(path.join(p, it), options);
     }
   }

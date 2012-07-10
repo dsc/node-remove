@@ -42,10 +42,10 @@ function removeAsync (paths=[], options, cb)
     Seq(paths)[stepMethod] (next_path, p) ->
         console.log "rm -rv #p" if verbose
         Seq()
-        .seq fs.stat, p, Seq
+        .seq fs.lstat, p, Seq
         .seq (stats) ->
-            # Files can be removed right away, and then move on to the next path
-            unless stats.isDirectory()
+            # Files/links can be removed right away, and then move on to the next path
+            if stats.isSymbolicLink() or not stats.isDirectory()
                 fs.unlink p, next_path
             else
                 # ...But directories need to be empty
@@ -95,10 +95,10 @@ function removeSync(paths=[], options={})
     for p of paths
         console.log "rm -rv #p" if verbose
         try
-            stats = fs.statSync p
+            stats = fs.lstatSync p
             
             # files can be removed right away
-            unless stats.isDirectory()
+            if stats.isSymbolicLink() or not stats.isDirectory()
                 fs.unlinkSync p
             else
                 # directories need to be empty

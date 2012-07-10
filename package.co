@@ -1,5 +1,5 @@
 name                            : 'remove'
-version                         : '0.1.4'
+version                         : '0.1.5'
 description                     : 'Sync and async rm -r.'
 homepage                        : 'http://github.com/dsc/node-remove'
 keywords                        : <[ util server files fs rm remove delete recursive ]>
